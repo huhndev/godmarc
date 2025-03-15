@@ -13,10 +13,11 @@
 #
 
 > [!IMPORTANT]
-> `godmarc` is pre-alpha software. [ROADMAP.md] shows our future plans.
+> `godmarc` is pre-alpha software.
 
 > [!NOTE]
 > In [CHANGELOG.md] you can follow recent changes.
+> [ROADMAP.md] shows our future plans.
 
 > [!CAUTION]
 > `godmarc` is part of a [vibe coding] project and was created with the help of [Claude 3.7 Sonnet].
