@@ -22,7 +22,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/huhnsystems/godmarc/internal/model"
+	"github.com/huhndev/godmarc/internal/model"
 )
 
 // ParseDMARCReport parses a DMARC report XML file

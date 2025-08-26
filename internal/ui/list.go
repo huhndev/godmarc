@@ -20,7 +20,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/huhnsystems/godmarc/internal/model"
+	"github.com/huhndev/godmarc/internal/model"
 )
 
 // ReportItem is a list item for the list model

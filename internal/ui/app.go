@@ -24,9 +24,9 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
-	"github.com/huhnsystems/godmarc/internal/formatter"
-	"github.com/huhnsystems/godmarc/internal/model"
-	"github.com/huhnsystems/godmarc/internal/storage"
+	"github.com/huhndev/godmarc/internal/formatter"
+	"github.com/huhndev/godmarc/internal/model"
+	"github.com/huhndev/godmarc/internal/storage"
 )
 
 // Model represents the state of the application

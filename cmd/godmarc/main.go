@@ -21,8 +21,8 @@ import (
 	"strings"
 
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/huhnsystems/godmarc/internal/storage"
-	"github.com/huhnsystems/godmarc/internal/ui"
+	"github.com/huhndev/godmarc/internal/storage"
+	"github.com/huhndev/godmarc/internal/ui"
 )
 
 func main() {

@@ -22,8 +22,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/huhnsystems/godmarc/internal/model"
-	"github.com/huhnsystems/godmarc/internal/parser"
+	"github.com/huhndev/godmarc/internal/model"
+	"github.com/huhndev/godmarc/internal/parser"
 )
 
 // ReportLoader handles loading DMARC reports from the filesystem

@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/huhnsystems/godmarc/internal/model"
+	"github.com/huhndev/godmarc/internal/model"
 )
 
 // FormatReport formats a single DMARC report for display with improved width usage

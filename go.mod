@@ -1,4 +1,4 @@
-module github.com/huhnsystems/godmarc
+module github.com/huhndev/godmarc
 
 go 1.24.0
 

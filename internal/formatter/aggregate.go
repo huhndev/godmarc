@@ -19,7 +19,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/huhnsystems/godmarc/internal/model"
+	"github.com/huhndev/godmarc/internal/model"
 )
 
 // FormatAggregatedReport formats an aggregated report for display with improved width usage
