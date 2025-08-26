@@ -15,12 +15,8 @@
 > [!IMPORTANT]
 > `godmarc` is pre-alpha software.
 
-> [!NOTE]
-> In [CHANGELOG.md] you can follow recent changes.
-> [ROADMAP.md] shows our future plans.
-
 > [!CAUTION]
-> `godmarc` is part of a [vibe coding] project and was created with the help of [Claude 3.7 Sonnet].
+> `godmarc` is part of a [vibe coding] project.
 
 ***
 
@@ -61,14 +57,6 @@ Example snippet of a DMARC report:
 </feedback>
 ```
 
-### Contributing
-
-See [CONTRIBUTING.md]
-
-### Security
-
-See [SECURITY.md]
-
 ### License
 
 The package may be used under the terms of the ISC License a copy of
@@ -78,10 +66,5 @@ Unless you explicitly state otherwise, any contribution submitted for inclusion
 in the work by you shall be licensed as above, without any additional terms or
 conditions.
 
-[ROADMAP.md]: https://github.com/huhnsystems/godmarc/blob/master/docs/ROADMAP.md
-[CHANGELOG.md]: https://github.com/huhnsystems/godmarc/blob/master/docs/CHANGELOG.md
-[CONTRIBUTING.md]: https://github.com/huhnsystems/godmarc/blob/master/docs/CONTRIBUTING.md
-[SECURITY.md]: https://github.com/huhnsystems/godmarc/blob/master/docs/SECURITY.md
-[LICENSE]: https://github.com/huhnsystems/godmarc/blob/master/LICENSE
+[LICENSE]: https://github.com/huhndev/godmarc/blob/master/LICENSE
 [vibe coding]: https://en.wikipedia.org/wiki/Vibe_coding
-[Claude 3.7 Sonnet]: https://en.wikipedia.org/wiki/Claude_(language_model)#Claude_3.7
