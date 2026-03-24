@@ -1,29 +1,17 @@
-//Copyright (c) 2025, Julian Huhn
-//
-//Permission to use, copy, modify, and/or distribute this software for any
-//purpose with or without fee is hereby granted, provided that the above
-//copyright notice and this permission notice appear in all copies.
-//
-//THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-//WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-//MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-//ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-//WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-//ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-//OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
 package storage
 
 import (
+	"compress/gzip"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
 
-	"github.com/huhndev/godmarc/internal/model"
-	"github.com/huhndev/godmarc/internal/parser"
+	"github.com/huhndev/godmarc/model"
+	"github.com/huhndev/godmarc/parser"
 )
 
 // ReportLoader handles loading DMARC reports from the filesystem
@@ -86,7 +74,6 @@ func (l *ReportLoader) LoadReports() ([]model.DMARCReport, error) {
 	var reports []model.DMARCReport
 	var parseErrors []string
 
-	// Track success and failure counts
 	successCount := 0
 	failureCount := 0
 
@@ -95,7 +82,6 @@ func (l *ReportLoader) LoadReports() ([]model.DMARCReport, error) {
 			continue
 		}
 
-		// Get the filename and validate it
 		filename := file.Name()
 
 		// Check for suspicious filenames (path traversal attempts)
@@ -115,8 +101,25 @@ func (l *ReportLoader) LoadReports() ([]model.DMARCReport, error) {
 			continue
 		}
 
-		// Join the path with validated filename
 		filePath := filepath.Join(l.ConfigDir, filename)
+
+		// Handle gzipped files
+		if strings.HasSuffix(strings.ToLower(filename), ".gz") {
+			xmlPath, err := decompressGzip(filePath)
+			if err != nil {
+				parseErrors = append(
+					parseErrors,
+					fmt.Sprintf("Error decompressing %s: %v", filename, err),
+				)
+				failureCount++
+				continue
+			}
+			defer os.Remove(xmlPath)
+			filePath = xmlPath
+		} else if !strings.HasSuffix(strings.ToLower(filename), ".xml") {
+			continue
+		}
+
 		report, err := parser.ParseDMARCReport(filePath)
 		if err != nil {
 			parseErrors = append(
@@ -131,10 +134,8 @@ func (l *ReportLoader) LoadReports() ([]model.DMARCReport, error) {
 		successCount++
 	}
 
-	// If we didn't successfully parse any reports, return an error
 	if len(reports) == 0 {
 		if len(parseErrors) > 0 {
-			// Combine all parsing errors into one message
 			return nil, fmt.Errorf(
 				"failed to parse any reports: %s",
 				strings.Join(parseErrors, "; "),
@@ -143,7 +144,6 @@ func (l *ReportLoader) LoadReports() ([]model.DMARCReport, error) {
 		return nil, ErrNoReports
 	}
 
-	// If we had some parsing errors but also some successes, log the errors but return the reports
 	if len(parseErrors) > 0 {
 		fmt.Printf(
 			"Warning: %d of %d files failed to parse\n",
@@ -158,10 +158,40 @@ func (l *ReportLoader) LoadReports() ([]model.DMARCReport, error) {
 	return reports, nil
 }
 
+// decompressGzip decompresses a gzipped file and returns the path to a temporary XML file
+func decompressGzip(gzPath string) (string, error) {
+	f, err := os.Open(gzPath)
+	if err != nil {
+		return "", fmt.Errorf("could not open gzip file: %w", err)
+	}
+	defer f.Close()
+
+	gr, err := gzip.NewReader(f)
+	if err != nil {
+		return "", fmt.Errorf("could not create gzip reader: %w", err)
+	}
+	defer gr.Close()
+
+	tmpFile, err := os.CreateTemp("", "godmarc-*.xml")
+	if err != nil {
+		return "", fmt.Errorf("could not create temp file: %w", err)
+	}
+
+	// Limit decompressed size to 50MB to prevent decompression bombs
+	limited := io.LimitReader(gr, 50*1024*1024)
+	if _, err := io.Copy(tmpFile, limited); err != nil {
+		tmpFile.Close()
+		os.Remove(tmpFile.Name())
+		return "", fmt.Errorf("could not decompress file: %w", err)
+	}
+
+	tmpFile.Close()
+	return tmpFile.Name(), nil
+}
+
 // SortReportsByDate sorts reports by date (newest first)
 func SortReportsByDate(reports []model.DMARCReport) {
 	sort.Slice(reports, func(i, j int) bool {
-		// Sort in descending order (newest first)
 		return reports[i].ReportMetadata.DateRange.Begin.After(
 			reports[j].ReportMetadata.DateRange.Begin,
 		)
